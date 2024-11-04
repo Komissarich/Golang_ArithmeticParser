@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"slices"
 	"strconv"
 	"unicode"
@@ -48,7 +47,7 @@ func CreatePostfix(expression string) ([]string, error) {
 			break
 		}
 
-		if unicode.IsDigit(rune(expression[ind])) {
+		if unicode.IsDigit(rune(expression[ind])) || (ind != len(expression)-1 && string(expression[ind]) == "-" && unicode.IsDigit(rune(expression[ind+1]))) {
 			number := string(expression[ind])
 			if ind != len(expression)-1 {
 				ind += 1
@@ -59,6 +58,9 @@ func CreatePostfix(expression string) ([]string, error) {
 						ind += 1
 					} else if expression[ind] == '.' {
 						number += "."
+						ind += 1
+					} else if expression[ind] == '-' {
+						number += "-"
 						ind += 1
 					} else {
 						break
@@ -108,7 +110,6 @@ func CreatePostfix(expression string) ([]string, error) {
 
 func Calc(expression string) (float64, error) {
 	postfix, err := CreatePostfix(expression)
-
 	if err != nil {
 		return 0, errors.New("something happened")
 	}
@@ -144,10 +145,4 @@ func Calc(expression string) (float64, error) {
 
 	}
 	return stack[len(stack)-1], nil
-}
-
-func main() {
-	str := "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))"
-	//right answer -30.072164948453608 <nil>
-	fmt.Println(Calc(str))
 }
