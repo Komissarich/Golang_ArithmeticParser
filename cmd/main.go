@@ -1,7 +1,7 @@
 package main
 
 import (
-	"lol/application"
+	"calc/application"
 )
 
 func main() {

@@ -1,9 +1,9 @@
 package application_test
 
 import (
+	"calc/application"
 	"encoding/json"
 	"fmt"
-	"lol/application"
 	"net/http"
 	"net/http/httptest"
 	"strings"

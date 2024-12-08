@@ -1,8 +1,8 @@
 package calculator_test
 
 import (
+	calculator "calc/pkg"
 	"fmt"
-	calculator "lol/pkg"
 	"testing"
 )
 

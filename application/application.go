@@ -1,9 +1,9 @@
 package application
 
 import (
+	calculator "calc/pkg"
 	"encoding/json"
 	"fmt"
-	calculator "lol/pkg"
 	"net/http"
 	"os"
 )
