@@ -68,9 +68,9 @@ type Request struct {
 }
 
 type ServerAnswer struct {
-	Expression string  `json:"Expression"`
-	Result     float64 `json:"Result"`
-	Error      string  `json:"Error"`
+	Expression string  `json:"expression"`
+	Result     float64 `json:"result"`
+	Error      string  `json:"error"`
 }
 
 func CalculationHandler(w http.ResponseWriter, r *http.Request) {

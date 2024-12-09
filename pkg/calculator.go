@@ -39,6 +39,7 @@ func isOperator(op string) bool {
 
 func createPostfix(expression string) ([]string, error) {
 	ind := 0
+	num_ind := 0
 	op_stack := []string{}
 	res := []string{}
 	if strings.Count(expression, "(") != strings.Count(expression, ")") {
@@ -51,8 +52,23 @@ func createPostfix(expression string) ([]string, error) {
 
 		if unicode.IsDigit(rune(expression[ind])) {
 			number := string(expression[ind])
+			num_ind = ind + 1
+			for num_ind < len(expression) {
+				if unicode.IsDigit(rune(expression[num_ind])) {
+					number += string(expression[num_ind])
+					num_ind += 1
+				} else if expression[num_ind] == '.' {
+					number += "."
+					num_ind += 1
+				} else {
+					break
+				}
+			}
+
 			res = append(res, string(number))
+			ind = num_ind - 1
 		}
+
 		if isOperator(string(expression[ind])) {
 			if ind != len(expression)-1 && isOperator(string(expression[ind])) && isOperator(string(expression[ind+1])) {
 				return []string{}, ErrRepeatingOperators
