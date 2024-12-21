@@ -62,12 +62,12 @@ func TestCalc(t *testing.T) {
 			expression: "2+2**2",
 		},
 		{
-			name:       "priority",
+			name:       "brackets",
 			expression: "((2+2-*(2",
 		},
 		{
 			name:       "/",
-			expression: "",
+			expression: "2/0",
 		},
 	}
 

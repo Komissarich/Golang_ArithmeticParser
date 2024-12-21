@@ -97,8 +97,11 @@ func createPostfix(expression string) ([]string, error) {
 		if expression[ind] == '(' {
 			op_stack = append(op_stack, string(expression[ind]))
 		}
-		ind += 1
 
+		if expression[ind] != '(' && expression[ind] != ')' && !unicode.IsDigit(rune(expression[ind])) && !isOperator(string(expression[ind])) {
+			return []string{}, ErrInvalidLetter
+		}
+		ind += 1
 	}
 	for len(op_stack) > 0 {
 		res = append(res, op_stack[len(op_stack)-1])

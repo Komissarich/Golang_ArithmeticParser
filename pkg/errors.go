@@ -3,10 +3,10 @@ package calculator
 import "errors"
 
 var (
-	ErrInvalidExpression  = errors.New("invalid expression")
-	ErrDivisionByZero     = errors.New("division by zero")
-	ErrRepeatingOperators = errors.New("repeating operators")
-	ErrInvalidBrackets    = errors.New("invalid brackets")
-	ErrInvalidOperator    = errors.New("invalid operator")
-	ErrEmptyString        = errors.New("empty string")
+	ErrInvalidLetter      = errors.New("expression is not valid")
+	ErrDivisionByZero     = errors.New("internal server error: division by zero")
+	ErrRepeatingOperators = errors.New("internal server error: repeating operators")
+	ErrInvalidBrackets    = errors.New("internal server error: invalid brackets")
+	ErrInvalidOperator    = errors.New("internal server error: invalid operator")
+	ErrEmptyString        = errors.New("internal server error: empty string")
 )

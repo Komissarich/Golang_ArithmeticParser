@@ -1,9 +1,11 @@
 package application
 
 import (
+	"bytes"
 	calculator "calc/pkg"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -41,12 +43,15 @@ func loggingMiddleware(logger *zap.Logger) mux.MiddlewareFunc {
 
 			start := time.Now()
 
+			bodyBytes, _ := io.ReadAll(r.Body)
+			r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 			duration := time.Since(start)
 			next.ServeHTTP(w, r)
 			logger.Info("HTTP request",
 				zap.String("method", r.Method),
 				zap.String("path", r.URL.Path),
 				zap.Duration("duration", duration),
+				zap.String("body", string(bodyBytes)),
 			)
 
 		})
@@ -67,10 +72,14 @@ type Request struct {
 	Expression string `json:"expression"`
 }
 
-type ServerAnswer struct {
+type ServerCorrectAnswer struct {
 	Expression string  `json:"expression"`
 	Result     float64 `json:"result"`
-	Error      string  `json:"error"`
+}
+
+type ServerErrorAnswer struct {
+	Expression string `json:"expression"`
+	Error      string `json:"error"`
 }
 
 func CalculationHandler(w http.ResponseWriter, r *http.Request) {
@@ -79,28 +88,26 @@ func CalculationHandler(w http.ResponseWriter, r *http.Request) {
 	req := Request{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		server_ans := ServerAnswer{Expression: req.Expression, Result: 0, Error: "error in parsing json"}
+		server_ans := ServerErrorAnswer{Expression: req.Expression, Error: "error in parsing json"}
 		ans_bytes, _ := json.Marshal(server_ans)
-		http.Error(w, string(ans_bytes), http.StatusBadRequest)
+		http.Error(w, string(ans_bytes), http.StatusUnprocessableEntity)
 
 	} else {
 		result, err := calculator.Calc(req.Expression)
 
-		var error_text = ""
-
 		if err != nil {
-			error_text = err.Error()
-		}
-
-		server_ans := ServerAnswer{Expression: req.Expression, Result: result, Error: error_text}
-		ans_bytes, _ := json.Marshal(server_ans)
-
-		if err != nil {
+			error_text := err.Error()
+			server_ans := ServerErrorAnswer{Expression: req.Expression, Error: error_text}
+			ans_bytes, _ := json.Marshal(server_ans)
 			http.Error(w, string(ans_bytes), http.StatusInternalServerError)
 
 		} else {
+
+			server_ans := ServerCorrectAnswer{Expression: req.Expression, Result: result}
+			ans_bytes, _ := json.Marshal(server_ans)
 			fmt.Fprintln(w, string(ans_bytes))
 		}
+
 	}
 
 }
@@ -111,8 +118,11 @@ func (a *Application) RunServer() error {
 	logger := setupLogger()
 
 	r.Use(loggingMiddleware(logger))
-	r.HandleFunc("/", CalculationHandler)
+	r.HandleFunc("/api/v1/calculate", CalculationHandler)
 
-	http.Handle("/", r)
+	http.Handle("/api/v1/calculate", r)
+	logger.Info("HTTP request",
+		zap.String("server status", "started"),
+	)
 	return http.ListenAndServe(":"+a.config.Addr, nil)
 }
