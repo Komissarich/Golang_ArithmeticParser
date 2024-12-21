@@ -23,7 +23,8 @@ cd Golang_ArithmeticParser
 go run ./cmd
 ```
 **Сервер принимает запросы с телом вида `{"expression": "2+3"}`**
-Вы можете сделать запрос в Postman, тогда через него же, или с помощью лога вы увидите, работает ли программа.
+Вы можете сделать запрос в Postman, тогда через него же, или с помощью лога вы увидите, работает ли программа. ![image](https://github.com/user-attachments/assets/605f0a9a-8352-4543-8061-2146dbc97235)
+
 
 ## Ответ сервера
 Сервер возвращает ответ в формате `{"expression":"2+3","result":5}"` для верного выражения и в формате `{"expression":"2++3","error":"internal server error: repeating operators"}"`
