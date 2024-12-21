@@ -42,7 +42,7 @@ func TestRequestHandlerGoodRequestCase(t *testing.T) {
 	for _, testCase := range testCasesSuccess {
 		t.Run(testCase.name, func(t *testing.T) {
 			reader := strings.NewReader(testCase.expression)
-			req := httptest.NewRequest(http.MethodGet, "/", reader)
+			req := httptest.NewRequest(http.MethodGet, "/api/v1/calculate", reader)
 			w := httptest.NewRecorder()
 			application.CalculationHandler(w, req)
 			res := w.Result()
@@ -104,7 +104,7 @@ func TestRequestHandlerBadRequestCase(t *testing.T) {
 	for _, testCase := range testCasesFail {
 		t.Run(testCase.name, func(t *testing.T) {
 			reader := strings.NewReader(testCase.expression)
-			req := httptest.NewRequest(http.MethodGet, "/", reader)
+			req := httptest.NewRequest(http.MethodGet, "/api/v1/calculate", reader)
 			w := httptest.NewRecorder()
 			application.CalculationHandler(w, req)
 			res := w.Result()
@@ -146,7 +146,7 @@ func TestRequestHandlerBadJson(t *testing.T) {
 	for _, testCase := range testCasesFail {
 		t.Run(testCase.name, func(t *testing.T) {
 			reader := strings.NewReader(testCase.expression)
-			req := httptest.NewRequest(http.MethodGet, "/", reader)
+			req := httptest.NewRequest(http.MethodGet, "/api/v1/calculate", reader)
 			w := httptest.NewRecorder()
 			application.CalculationHandler(w, req)
 			res := w.Result()
