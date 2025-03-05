@@ -23,8 +23,10 @@ cd Golang_ArithmeticParser
 go run ./cmd
 ```
 **Зайдите в ваш браузер и введите localhost:8080**
+
 Вы можете вводить арифметические выражения используя кнопки на калькуляторе. После набора выражения, нажмите =, для отправки выражения на сервер.
-Вы можете убедиться, что сервер получил ваш запрос, если нажмете кнопки Receive и выберите All expression. Пример: ![image](https://github.com/user-attachments/assets/77b1c8a7-a650-4c54-a21d-d7ba1ea2ef86)
+Вы можете убедиться, что сервер получил ваш запрос, если нажмете кнопки Receive и выберите All expression. 
+Пример: ![image](https://github.com/user-attachments/assets/77b1c8a7-a650-4c54-a21d-d7ba1ea2ef86)
  
 
 ## Ответ сервера
