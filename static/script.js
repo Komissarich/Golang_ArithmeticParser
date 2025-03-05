@@ -28,7 +28,7 @@ const calculator = {
 
  function change() {
     if ((document.getElementsByClassName('list')[0].value == 'One expression' || document.getElementsByClassName('list')[0].value == 'One task') && document.getElementsByClassName('ghost').length == 0) {
-        console.log(1)
+    
     const inputElement = document.createElement('input');
 
 // Устанавливаем атрибуты элемента (например, тип, placeholder и т.д.)
@@ -42,13 +42,13 @@ document.body.appendChild(inputElement); // Добавление в тело д�
 // Или:
 const container = document.getElementsByClassName('magic_input')[0];
 container.appendChild(inputElement)
-console.log(2)
+
     }
 
     if ((document.getElementsByClassName('list')[0].value == 'All expressions' || document.getElementsByClassName('list')[0].value == 'All tasks') && document.getElementsByClassName('ghost').length == 1) {
         var elem = document.getElementsByClassName('ghost')[0];
         elem.parentNode.removeChild(elem);
-        console.log(3)
+      
     }
  } 
 
