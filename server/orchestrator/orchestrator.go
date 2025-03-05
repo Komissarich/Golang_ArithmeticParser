@@ -112,7 +112,7 @@ func NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) TaskCreator() {
-	time.Sleep(time.Second * 8)
+	time.Sleep(time.Second * 5)
 
 	for _, expr := range expressions.Expressions {
 		if expr.Status != "Solved" && expr.Status != "Error in expression" && !expr.WaitforSolve {
@@ -202,7 +202,7 @@ func TaskSendHandler(w http.ResponseWriter, r *http.Request) {
 			type Response struct {
 				Task models.Task `json:"task"`
 			}
-			//	fmt.Println(task.Id)
+
 			resp := Response{Task: *task}
 			json.NewEncoder(w).Encode(resp)
 			return
@@ -232,7 +232,7 @@ func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
 		if expr.Id == req.Task.ExpressionId && expr.WaitforSolve {
 			expr.WaitforSolve = false
 			expr.Stack = append(expr.Stack, req.Task.Value)
-			fmt.Println("a", expr.Stack, req.Task.Value)
+
 		}
 	}
 

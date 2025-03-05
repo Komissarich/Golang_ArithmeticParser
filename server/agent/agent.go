@@ -66,23 +66,23 @@ func (a *Agent) worker(t *models.Task) {
 	case "+":
 		timer := time.Duration(a.cfg.Addition_Time) * time.Millisecond
 		time.Sleep(timer)
-		t.OperationTime = time.Duration(timer.Seconds())
+		t.OperationTime = timer / 1000000
 		result = t.Arg1 + t.Arg2
 	case "-":
 		timer := time.Duration(a.cfg.Substraction_Time) * time.Millisecond
 		time.Sleep(timer)
-		t.OperationTime = time.Duration(timer.Seconds())
+		t.OperationTime = timer / 1000000
 		result = t.Arg2 - t.Arg1
 
 	case "*":
 		timer := time.Duration(a.cfg.Multiplication_Time) * time.Millisecond
 		time.Sleep(timer)
-		t.OperationTime = time.Duration(timer.Seconds())
+		t.OperationTime = timer / 1000000
 		result = t.Arg1 * t.Arg2
 	case "/":
 		timer := time.Duration(a.cfg.Division_Time) * time.Millisecond
 		time.Sleep(timer)
-		t.OperationTime = time.Duration(timer.Seconds())
+		t.OperationTime = timer / 1000000
 		result = t.Arg1 / t.Arg2
 	default:
 		result = 0
