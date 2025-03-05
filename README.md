@@ -38,12 +38,13 @@ go run ./cmd
 ![image](https://github.com/user-attachments/assets/0bb2f2d1-529b-4fbf-9379-41af48d725bf)
 
 Также, вы можете отслеживать какие задачи были созданы, статус их выполнения, если выберите All Tasks.
-![image](https://github.com/user-attachments/assets/639feffc-4fca-48d5-8b58-5fe6fc5253a9)
+![image](https://github.com/user-attachments/assets/a0e7a27e-f37f-4d02-ab8f-1a6dbb9c5298)
 
 Задачи назначаются оркестратором с задержкой в 5 секунд, так что для обновления просто снова нажимайте Receive.
 
 Также вы можете обратиться к конкретной задаче или к конкретному выражению по их id. Для этого выберите One expression/One task и введите в появившееся поле id.
-![image](https://github.com/user-attachments/assets/0735694e-c23e-4557-9c76-bebb378fe398)
+![image](https://github.com/user-attachments/assets/b70b1186-dbd1-408e-89d5-092e3e9edd1d)
+
 
 ## Ответ сервера
 Сервер возвращает ответ в формате `{"expression":"2+3","result":5}"` для верного выражения и в формате `{"expression":"2++3","error":"internal server error: repeating operators"}"`
