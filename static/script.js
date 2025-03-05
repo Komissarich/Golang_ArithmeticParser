@@ -80,12 +80,12 @@ function receiveInfo() {
    
    if (options.value == 'All expressions')  {
         url = "http://localhost:8080/api/v1/expressions/"
-        console.log(url)
+       
    } else if (options.value == 'One expression') {
         id = document.getElementsByClassName("ghost")[0].value
        
         url = "http://localhost:8080/api/v1/expressions/" + id
-        console.log(url)
+      
    } else if (options.value == 'All tasks') {
     url = "http://localhost:8080/api/v1/tasks/"
    }
@@ -99,7 +99,7 @@ function receiveInfo() {
       })
       .then( (response) => { 
         response.json().then((data) => {
-            console.log(data.Array);
+          
             const a = document.getElementsByClassName("received-expressions");
             a[0].textContent = JSON.stringify(data, null, 2);
         })
