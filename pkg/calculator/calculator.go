@@ -1,9 +1,11 @@
 package calculator
 
 import (
+	"calc/pkg/calculator/calc_errors"
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -28,22 +30,26 @@ func priority(char string) int {
 
 }
 
-func isOperator(op string) bool {
+func IsOperator(op string) bool {
 	opers := []string{"-", "+", "*", "/", "^"}
 	if slices.Contains(opers, op) {
 		return true
 	}
 	return false
-
 }
 
-func createPostfix(expression string) ([]string, error) {
+func LongAdd(a float64, b float64) float64 {
+	time.Sleep(3 * time.Second)
+	return a + b
+}
+
+func CreatePostfix(expression string) ([]string, error) {
 	ind := 0
 	num_ind := 0
 	op_stack := []string{}
 	res := []string{}
 	if strings.Count(expression, "(") != strings.Count(expression, ")") {
-		return nil, ErrInvalidBrackets
+		return nil, calc_errors.ErrInvalidBrackets
 	}
 	for {
 		if ind >= len(expression) {
@@ -69,12 +75,12 @@ func createPostfix(expression string) ([]string, error) {
 			ind = num_ind - 1
 		}
 
-		if isOperator(string(expression[ind])) {
-			if ind != len(expression)-1 && isOperator(string(expression[ind])) && isOperator(string(expression[ind+1])) {
-				return []string{}, ErrRepeatingOperators
+		if IsOperator(string(expression[ind])) {
+			if ind != len(expression)-1 && IsOperator(string(expression[ind])) && IsOperator(string(expression[ind+1])) {
+				return []string{}, calc_errors.ErrRepeatingOperators
 			}
 			if ind == len(expression)-1 {
-				return []string{}, ErrInvalidOperator
+				return []string{}, calc_errors.ErrInvalidOperator
 			}
 			for len(op_stack) > 0 && op_stack[len(op_stack)-1] != "(" && priority(string(expression[ind])) <= priority(op_stack[len(op_stack)-1]) {
 				res = append(res, op_stack[len(op_stack)-1])
@@ -98,8 +104,8 @@ func createPostfix(expression string) ([]string, error) {
 			op_stack = append(op_stack, string(expression[ind]))
 		}
 
-		if expression[ind] != '(' && expression[ind] != ')' && !unicode.IsDigit(rune(expression[ind])) && !isOperator(string(expression[ind])) {
-			return []string{}, ErrInvalidLetter
+		if expression[ind] != '(' && expression[ind] != ')' && !unicode.IsDigit(rune(expression[ind])) && !IsOperator(string(expression[ind])) {
+			return []string{}, calc_errors.ErrInvalidLetter
 		}
 		ind += 1
 	}
@@ -111,20 +117,16 @@ func createPostfix(expression string) ([]string, error) {
 }
 
 func Calc(expression string) (float64, error) {
-	postfix, err := createPostfix(expression)
+	postfix, err := CreatePostfix(expression)
 	if err != nil {
 		return 0, err
 	}
 	stack := []float64{}
-
-	if len(postfix) == 0 {
-		return 0, ErrEmptyString
-	}
 	for _, val := range postfix {
 		conv_val, err := strconv.ParseFloat(val, 64)
 		if err == nil {
 			stack = append(stack, conv_val)
-		} else if isOperator(val) {
+		} else if IsOperator(val) {
 
 			fir_pop_item := stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
@@ -132,14 +134,14 @@ func Calc(expression string) (float64, error) {
 			stack = stack[:len(stack)-1]
 			switch val {
 			case "+":
-				stack = append(stack, fir_pop_item+sec_pop_item)
+				stack = append(stack, float64(LongAdd(fir_pop_item, sec_pop_item)))
 			case "-":
 				stack = append(stack, sec_pop_item-fir_pop_item)
 			case "*":
 				stack = append(stack, fir_pop_item*sec_pop_item)
 			case "/":
 				if fir_pop_item == 0 {
-					return 0, ErrDivisionByZero
+					return 0, calc_errors.ErrDivisionByZero
 				}
 				stack = append(stack, sec_pop_item/fir_pop_item)
 			}

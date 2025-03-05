@@ -1,4 +1,4 @@
-package calculator
+package calc_errors
 
 import "errors"
 

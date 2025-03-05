@@ -1,7 +1,6 @@
-package calculator_test
+package calculator
 
 import (
-	calculator "calc/pkg"
 	"fmt"
 	"testing"
 )
@@ -36,7 +35,8 @@ func TestCalc(t *testing.T) {
 
 	for _, testCase := range testCasesSuccess {
 		t.Run(testCase.name, func(t *testing.T) {
-			val, err := calculator.Calc(testCase.expression)
+
+			val, err := Calc(testCase.expression)
 			if err == nil {
 				fmt.Println("great test!")
 			}
@@ -73,7 +73,7 @@ func TestCalc(t *testing.T) {
 
 	for _, testCase := range testCasesFail {
 		t.Run(testCase.name, func(t *testing.T) {
-			val, err := calculator.Calc(testCase.expression)
+			val, err := Calc(testCase.expression)
 			if err == nil {
 				t.Fatalf("expression %s is invalid but result  %f was obtained", testCase.expression, val)
 			}
