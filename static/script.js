@@ -99,7 +99,7 @@ function receiveInfo() {
       })
       .then( (response) => { 
         response.json().then((data) => {
-          
+            console.log(data);
             const a = document.getElementsByClassName("received-expressions");
             a[0].textContent = JSON.stringify(data, null, 2);
         })
