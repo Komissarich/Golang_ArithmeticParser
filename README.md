@@ -7,7 +7,7 @@
 - [Работа с калькулятором](#Работа с калькулятором)
 - [Конфигурирование](#Конфигурирование)
 - [Тестирование](#Тестирование)
-- [Примеры](#Примеры)
+
 
 ## Установка
 
@@ -62,20 +62,13 @@ go run ./cmd
   - 500: Если сервер смог обработать переданное выражение, но оно не имеет математического смысла, сюда входят ошибки деления на 0, неверные скобки, пустая строка, повторение операторов.
 
 ## Тестирование
-Вы можете протестировать приложение с помощью тестов в папке application и pkg
-Для запуска этих тестов выполните команду 
-```bash
-go test ./application -v
-```
+К сожалению, автоматические тесты у меня сделать не получилось. Однако программа успешно выполняет асинхронные вычисления, в чем можно убедиться, если послать друг за другом несколько выражений.
 
-## Примеры
-![image](https://github.com/user-attachments/assets/b16d8210-0bc0-47aa-aa90-9cec3c578329)
-![image](https://github.com/user-attachments/assets/5ffc8562-9683-499b-854c-8c0c87c2b05e)
-![image](https://github.com/user-attachments/assets/e524dd38-9173-4e57-bedf-9575d079d2a6)
-![image](https://github.com/user-attachments/assets/9ebbd151-f676-43f3-88f6-735764de3b71)
-![image](https://github.com/user-attachments/assets/862a97f0-50be-4a14-afb9-32e369f0a8f2)
-![image](https://github.com/user-attachments/assets/b7005326-9693-4f8a-8e52-f389bc141c35)
-![image](https://github.com/user-attachments/assets/9283005f-bbc3-4676-8d2f-d86973cd6545)
+Пример:
+![image](https://github.com/user-attachments/assets/da10b230-2fc7-4114-bec7-4bfd342640b3)
+![image](https://github.com/user-attachments/assets/92fa192a-99c7-4d0e-ab3c-8abf46e62d05)
+
+
 
 
 
