@@ -28,6 +28,11 @@ go run ./cmd
 Вы можете убедиться, что сервер получил ваш запрос, если нажмете Receive с указанием All expression. 
 
 ![image](https://github.com/user-attachments/assets/77b1c8a7-a650-4c54-a21d-d7ba1ea2ef86)
+
+Если вы введете некорректное выражение, то его статус будет обозначен как "Error in expression". Такое выражение вычисляться не будет.
+Также, в консоли разработчика будет указан код ошибки.
+![image](https://github.com/user-attachments/assets/5e780117-6192-4ba8-ad6e-8c1096d5b8ed)
+
  
 
 ## Ответ сервера
