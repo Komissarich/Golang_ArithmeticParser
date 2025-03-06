@@ -38,17 +38,11 @@ func (a *Agent) Work() {
 	res := Req{}
 
 	json.NewDecoder(resp.Body).Decode(&res)
-	//fmt.Println(res.Task)
-	//	mutex.Unlock()
-	// if err != nil {
-	// 	//	fmt.Println("err")
-	// } else {
-	// 	fmt.Println(res.Task)
 
 	guard := make(chan struct{}, a.cfg.Computing_Power)
 
 	for i := 0; i < a.cfg.Computing_Power; i++ {
-		guard <- struct{}{} // would block if guard channel is already filled
+		guard <- struct{}{}
 		go func(task *models.Task) {
 			a.worker(task)
 			<-guard
@@ -59,7 +53,7 @@ func (a *Agent) Work() {
 }
 
 func (a *Agent) worker(t *models.Task) {
-	//fmt.Println("doing work on", i)
+
 	time.Sleep(t.OperationTime)
 	var result float64
 	switch t.Operation {

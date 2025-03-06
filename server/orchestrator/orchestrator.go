@@ -42,19 +42,19 @@ type Application struct {
 func loggingMiddleware(logger *zap.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
 			start := time.Now()
-
 			bodyBytes, _ := io.ReadAll(r.Body)
 			r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			duration := time.Since(start)
-			next.ServeHTTP(w, r)
-			logger.Info("HTTP request",
-				zap.String("method", r.Method),
-				zap.String("path", r.URL.Path),
-				zap.Duration("duration", duration),
-				zap.String("body", string(bodyBytes)),
-			)
+			if r.URL.Path != "/api/v1/internal/task/" {
+				duration := time.Since(start)
+				next.ServeHTTP(w, r)
+				logger.Info("HTTP request",
+					zap.String("method", r.Method),
+					zap.String("path", r.URL.Path),
+					zap.Duration("duration", duration),
+					zap.String("body", string(bodyBytes)),
+				)
+			}
 		})
 	}
 }
@@ -259,6 +259,6 @@ func (a *Application) RunServer() error {
 	logger.Info("HTTP request",
 		zap.String("server status", "started"),
 	)
-
+	r.Use(loggingMiddleware(logger))
 	return http.ListenAndServe(":"+a.cfg.Server_Port, r)
 }
