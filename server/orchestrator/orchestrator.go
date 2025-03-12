@@ -45,6 +45,7 @@ func loggingMiddleware(logger *zap.Logger) mux.MiddlewareFunc {
 			start := time.Now()
 			bodyBytes, _ := io.ReadAll(r.Body)
 			r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+			next.ServeHTTP(w, r)
 			if r.URL.Path != "/api/v1/internal/task/" {
 				duration := time.Since(start)
 				next.ServeHTTP(w, r)
