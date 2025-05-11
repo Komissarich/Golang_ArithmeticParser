@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="">
   <head>
     <meta charset="UTF-8">
@@ -12,3 +13,73 @@
     <div id="app"></div>
   </body>
 </html>
+=======
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AriphmeticParser</title>
+    <link rel="stylesheet" href="/static/styles.css">
+
+</head>
+
+<body>
+    <div class="calc-div">
+    <div class="calculator">
+        <input type="text" class="calculator-screen" value="0" disabled>
+        <div class="calculator-buttons">
+            <button type="button" class="all-clear" value="all-clear">AC</button>
+            <button type="button" class="operator" value="(">(</button>
+            <button type="button" class="operator" value=")">)</button>
+            <button type="button" class="operator" value="+">+</button>
+
+            <button type="button" value="7">7</button>
+            <button type="button" value="8">8</button>
+            <button type="button" value="9">9</button>
+            <button type="button" class="operator" value="-">-</button>
+            
+            <button type="button" value="4">4</button>
+            <button type="button" value="5">5</button>
+            <button type="button" value="6">6</button>
+            <button type="button" class="operator" value="*">*</button>
+
+            <button type="button" value="1">1</button>
+            <button type="button" value="2">2</button>
+            <button type="button" value="3">3</button>
+            <button type="button" class="operator" value="/">/</button>
+           
+           
+            
+            
+            <button type="button" value="0">0</button>
+            <button type="button" class="dot" value=".">.</button>
+            
+            <button type="button" class="equal-sign" value="=">=</button>
+        </div>
+
+    </div>
+    </div>
+
+    <div style="text-align:center; " class="get-button" >
+        <button type="button" style="background-color: rgb(197, 224, 214);" onclick="receiveInfo()">Receive</button>
+        <select class="list" onchange="change()">
+            <option value="All expressions">All expressions</option>
+            <option value="One expression">One expression</option>
+            <option value="One task">One task</option>
+            <option value="All tasks">All tasks</option>
+          </select>
+    </div>
+
+    <div class="magic_input" style="text-align: center; margin-top: 20px;  ">
+        
+    </div>
+    <div style="text-align: center;">
+        <textarea disabled class="received-expressions"></textarea>
+    </div>
+    <script src="/static/script.js"></script>
+        
+</body>
+</html> 
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868

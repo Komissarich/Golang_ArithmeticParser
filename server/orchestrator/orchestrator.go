@@ -6,6 +6,7 @@ import (
 	"calc/pkg/config"
 	logger "calc/pkg/logger"
 	"calc/server/models"
+<<<<<<< HEAD
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -21,6 +22,16 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
+=======
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gorilla/mux"
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	"go.uber.org/zap"
 )
 
@@ -28,9 +39,15 @@ var expressions models.ExpressionQueue
 
 var tasks models.TaskQueue
 
+<<<<<<< HEAD
 var db *sql.DB
 
 var global_userID int = 1
+=======
+// type Config struct {
+// 	Addr string
+// }
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 
 type ServerCorrectAnswer struct {
 	Expression string  `json:"expression"`
@@ -49,20 +66,33 @@ type Application struct {
 func loggingMiddleware(logger *zap.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+<<<<<<< HEAD
+=======
+			start := time.Now()
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 			bodyBytes, _ := io.ReadAll(r.Body)
 			r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 			next.ServeHTTP(w, r)
 			if r.URL.Path != "/api/v1/internal/task/" {
+<<<<<<< HEAD
+=======
+				duration := time.Since(start)
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 				next.ServeHTTP(w, r)
 				logger.Info("HTTP request",
 					zap.String("method", r.Method),
 					zap.String("path", r.URL.Path),
+<<<<<<< HEAD
+=======
+					zap.Duration("duration", duration),
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 					zap.String("body", string(bodyBytes)),
 				)
 			}
 		})
 	}
 }
+<<<<<<< HEAD
 func (app *Application) generateToken(userID int) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -165,6 +195,8 @@ func initDB() {
 		log.Fatal(err)
 	}
 }
+=======
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 
 func New(cfg config.Config) *Application {
 	return &Application{
@@ -172,6 +204,7 @@ func New(cfg config.Config) *Application {
 	}
 }
 
+<<<<<<< HEAD
 func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	enableCORS(w, r)
@@ -242,6 +275,20 @@ func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.
 		http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
 	}
 }
+=======
+func PrintAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
+
+	defer r.Body.Close()
+	enableCORS(w, r)
+
+	ans_bytes, err := json.Marshal(expressions)
+	if err != nil {
+		http.Error(w, "error in creating expressions json", http.StatusInternalServerError)
+	}
+	fmt.Fprintln(w, string(ans_bytes))
+}
+
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 func enableCORS(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
@@ -251,7 +298,11 @@ func enableCORS(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+<<<<<<< HEAD
 func (a *Application) NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
+=======
+func NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 
 	defer r.Body.Close()
 	enableCORS(w, r)
@@ -266,6 +317,7 @@ func (a *Application) NewExpressionHandler(w http.ResponseWriter, r *http.Reques
 		type Answer struct {
 			Id string `json:"id"`
 		}
+<<<<<<< HEAD
 		//id, err := expressions.AddExpression(req.Expression)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
@@ -303,6 +355,13 @@ func (a *Application) NewExpressionHandler(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		}
 		server_ans := Answer{Id: expr.Id}
+=======
+		id, err := expressions.AddExpression(req.Expression)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		}
+		server_ans := Answer{Id: id}
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 		ans_bytes, _ := json.Marshal(server_ans)
 		fmt.Fprintln(w, string(ans_bytes))
 	}
@@ -311,6 +370,7 @@ func (a *Application) NewExpressionHandler(w http.ResponseWriter, r *http.Reques
 func (a *Application) TaskCreator() {
 	time.Sleep(time.Second * 5)
 
+<<<<<<< HEAD
 	rows, err := db.Query(`
         SELECT id, status, result, value, postfix_string, 
                wait_for_solve, stack, saved_index
@@ -360,15 +420,28 @@ func (a *Application) TaskCreator() {
 					expr.Result,
 					expr.Id,
 				)
+=======
+	for _, expr := range expressions.Expressions {
+		if expr.Status != "Solved" && expr.Status != "Error in expression" && !expr.WaitforSolve {
+
+			if expr.SavedIndex == len(expr.PostfixString) {
+				expr.Status = "Solved"
+				expr.Result = expr.Stack[0]
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 			} else {
 
 				for i := expr.SavedIndex; i < len(expr.PostfixString); i++ {
 
+<<<<<<< HEAD
 					if !expr.WaitForSolve {
+=======
+					if !expr.WaitforSolve {
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 						val := expr.PostfixString[i]
 						conv_val, err := strconv.ParseFloat(val, 64)
 						if err == nil {
 							expr.Stack = append(expr.Stack, conv_val)
+<<<<<<< HEAD
 							stackStr, _ := json.Marshal(expr.Stack)
 							db.Exec(`
 								UPDATE expressions 
@@ -380,12 +453,17 @@ func (a *Application) TaskCreator() {
 							)
 						} else if calculator.IsOperator(val) {
 							fmt.Println("NICE NICE NICE")
+=======
+						} else if calculator.IsOperator(val) {
+
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 							fir_pop_item := expr.Stack[len(expr.Stack)-1]
 							expr.Stack = expr.Stack[:len(expr.Stack)-1]
 							sec_pop_item := expr.Stack[len(expr.Stack)-1]
 							expr.Stack = expr.Stack[:len(expr.Stack)-1]
 
 							if fir_pop_item == 0 && val == "/" {
+<<<<<<< HEAD
 								db.Exec(`
 									UPDATE expressions 
 									SET status = 'Error in expression',
@@ -413,6 +491,17 @@ func (a *Application) TaskCreator() {
 
 						}
 
+=======
+								expr.Status = "Error in expression"
+							}
+
+							tasks.NewTask(expr.Id, fir_pop_item, sec_pop_item, val)
+							expr.WaitforSolve = true
+
+							expr.SavedIndex = i + 1
+
+						}
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 					}
 				}
 			}
@@ -425,6 +514,7 @@ func PrintTaskHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	enableCORS(w, r)
 
+<<<<<<< HEAD
 	var creds struct {
 		Task_id string `json:"task_id"`
 	}
@@ -435,6 +525,12 @@ func PrintTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, task := range tasks.Tasks {
 		if task.Id == creds.Task_id {
+=======
+	vars := mux.Vars(r)
+	id := vars["task_id"]
+	for _, task := range tasks.Tasks {
+		if task.Id == id {
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 			ans_bytes, _ := json.Marshal(task)
 			fmt.Fprintln(w, string(ans_bytes))
 			return
@@ -452,6 +548,7 @@ func PrintAllTasksHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+<<<<<<< HEAD
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -563,6 +660,21 @@ func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
 	ans_bytes, _ := json.Marshal(expr)
 	fmt.Fprintln(w, string(ans_bytes))
 
+=======
+func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	enableCORS(w, r)
+	vars := mux.Vars(r)
+	id := vars["expr_id"]
+	for _, expr := range expressions.Expressions {
+		if expr.Id == id {
+			ans_bytes, _ := json.Marshal(expr)
+			fmt.Fprintln(w, string(ans_bytes))
+			return
+		}
+	}
+	http.Error(w, "not found", http.StatusNotFound)
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 }
 
 func TaskSendHandler(w http.ResponseWriter, r *http.Request) {
@@ -582,14 +694,20 @@ func TaskSendHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	type taskReq struct {
 		Task *models.Task `json:"task"`
 	}
 
 	req := taskReq{}
 	err := json.NewDecoder(r.Body).Decode(&req)
+<<<<<<< HEAD
 
+=======
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	if err != nil {
 		http.Error(w, "error in parsing json", http.StatusUnprocessableEntity)
 	}
@@ -601,6 +719,7 @@ func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
 			task.Value = req.Task.Value
 		}
 	}
+<<<<<<< HEAD
 
 	rows, err := db.Query(`
         SELECT id, status, result, value, postfix_string, 
@@ -649,11 +768,19 @@ func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
 				expr.WaitForSolve,
 				expr.Id,
 			)
+=======
+	for _, expr := range expressions.Expressions {
+		if expr.Id == req.Task.ExpressionId && expr.WaitforSolve {
+			expr.WaitforSolve = false
+			expr.Stack = append(expr.Stack, req.Task.Value)
+
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 		}
 	}
 
 }
 
+<<<<<<< HEAD
 func isApiRequest(path string) bool {
 	return strings.HasPrefix(path, "/api") ||
 		strings.HasPrefix(path, "/static")
@@ -705,6 +832,26 @@ func (a *Application) RunServer() error {
 		}
 	})
 
+=======
+func (a *Application) RunServer() error {
+	r := mux.NewRouter()
+
+	logger := logger.SetupLogger()
+
+	r.HandleFunc("/api/v1/calculate/", NewExpressionHandler).Methods("POST")
+	r.HandleFunc("/api/v1/expressions/", PrintAllExpressionsHandler).Methods("GET")
+	r.HandleFunc("/api/v1/expressions/{expr_id}", PrintExpressionHandler).Methods("GET")
+	r.HandleFunc("/api/v1/tasks/", PrintAllTasksHandler).Methods("GET")
+	r.HandleFunc("/api/v1/tasks/{task_id}", PrintTaskHandler).Methods("GET")
+	r.HandleFunc("/api/v1/internal/task/", TaskSendHandler).Methods("GET")
+	r.HandleFunc("/api/v1/internal/task/", TaskSolveHandler).Methods("POST")
+
+	fs := http.FileServer(http.Dir("static"))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "static/index.html")
+	})
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	logger.Info("HTTP request",
 		zap.String("server status", "started"),
 	)

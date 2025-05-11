@@ -10,6 +10,7 @@ import (
 )
 
 type Expression struct {
+<<<<<<< HEAD
 	Id            string    `json:"id" db:"id"`
 	UserID        int       `json:"user_id" db:"user_id"`
 	Status        string    `json:"status" db:"status"`
@@ -19,6 +20,16 @@ type Expression struct {
 	WaitForSolve  bool      `json:"-" db:"wait_for_solve"`
 	Stack         []float64 `json:"-" db:"stack"`
 	SavedIndex    int       `json:"-" db:"saved_index"`
+=======
+	Id            string    `json:"id"`
+	Status        string    `json:"status"`
+	Result        float64   `json:"result"`
+	Value         string    `json:"value"`
+	PostfixString []string  `json:"-"`
+	WaitforSolve  bool      `json:"-"`
+	Stack         []float64 `json:"-"`
+	SavedIndex    int       `json:"-"`
+>>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 }
 
 type ExpressionQueue struct {
