@@ -1,0 +1,10 @@
+SERVER_PORT: 8080
+AGENT:
+    TimeAdditionMS: 3000
+    TimeSubtractionMS : 400
+    TimeMultiplicationMS : 500
+    TimeDivisionMS: 200
+    COMPUTING_POWER: 2
+
+JWT_SECRET: "very_secret_key"
+JWT_EXPIRATION: "24h"

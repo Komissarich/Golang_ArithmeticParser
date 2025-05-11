@@ -9,8 +9,9 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "program": "${workspaceFolder}\\cmd\\main.go",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }
