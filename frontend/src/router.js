@@ -26,10 +26,10 @@ router.beforeEach((to, from, next) => {
       
         if (to.meta.requireAuth === true && authState.isLoggedIn === false) {
            
-            console.log(authState.isLoggedIn)
+          
             return next({ path: "/auth" })
         }
-        console.log(authState.isLoggedIn)
+     
         next()
     }
       

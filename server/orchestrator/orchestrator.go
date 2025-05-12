@@ -33,10 +33,6 @@ var db *sql.DB
 
 var global_userID int = 1
 
-// type Config struct {
-// 	Addr string
-// }
-
 type ServerCorrectAnswer struct {
 	Expression string  `json:"expression"`
 	Result     float64 `json:"result"`
@@ -197,7 +193,7 @@ func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 	}
 	global_userID = user_id
-	// Получаем выражения из базы данных для текущего пользователя
+
 	rows, err := db.Query(`
         SELECT id, status, result, value, created_at, updated_at 
         FROM expressions 
@@ -211,7 +207,6 @@ func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.
 	}
 	defer rows.Close()
 
-	// Собираем результаты
 	var expressions []struct {
 		Id        string    `json:"id"`
 		Status    string    `json:"status"`
@@ -247,13 +242,11 @@ func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.
 		expressions = append(expressions, expr)
 	}
 
-	// Проверяем ошибки итерации
 	if err = rows.Err(); err != nil {
 		http.Error(w, "Error during rows iteration: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Отправляем ответ
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(expressions); err != nil {
 		http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
@@ -299,7 +292,6 @@ func (a *Application) NewExpressionHandler(w http.ResponseWriter, r *http.Reques
 			Id string `json:"id"`
 		}
 
-		//id, err := expressions.AddExpression(req.Expression)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		}
@@ -383,7 +375,6 @@ func (a *Application) TaskCreator() {
 		}
 		json.Unmarshal([]byte(postfixStr), &expr.PostfixString)
 		json.Unmarshal([]byte(stackStr), &expr.Stack)
-		fmt.Println(expr.Id, expr.SavedIndex, expr.PostfixString, expr.Stack)
 
 		if expr.Status != "Solved" && expr.Status != "Error in expression" && !expr.WaitForSolve {
 			if expr.SavedIndex == len(expr.PostfixString) && len(expr.Stack) != 0 {
@@ -414,7 +405,6 @@ func (a *Application) TaskCreator() {
 								expr.Id,
 							)
 						} else if calculator.IsOperator(val) {
-							fmt.Println("NICE NICE NICE")
 
 							fir_pop_item := expr.Stack[len(expr.Stack)-1]
 							expr.Stack = expr.Stack[:len(expr.Stack)-1]
@@ -517,7 +507,7 @@ func (app *Application) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to read body", http.StatusBadRequest)
 		return
 	}
-	r.Body.Close() // Явно закрываем тело
+	r.Body.Close()
 
 	var creds struct {
 		Email    string `json:"email"`
@@ -579,7 +569,7 @@ func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to read body", http.StatusBadRequest)
 		return
 	}
-	r.Body.Close() // Явно закрываем тело
+	r.Body.Close()
 	if err := json.Unmarshal(bodyBytes, &creds); err != nil {
 		http.Error(w, fmt.Sprintf("Invalid JSON: %v", err), http.StatusBadRequest)
 		return
@@ -704,10 +694,10 @@ func (a *Application) RunServer() error {
 	defer db.Close()
 	r := mux.NewRouter()
 	logger := logger.SetupLogger()
-	staticDir := "./static" // Путь к папке со статикой
+	staticDir := "./static"
 	staticHandler := http.FileServer(http.Dir(staticDir))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Устанавливаем правильные MIME-типы
+
 		switch {
 		case strings.HasSuffix(r.URL.Path, ".css"):
 			w.Header().Set("Content-Type", "text/css")
@@ -728,12 +718,12 @@ func (a *Application) RunServer() error {
 	api.HandleFunc("/get_expression/", PrintExpressionHandler).Methods("POST")
 	api.HandleFunc("/tasks/", PrintAllTasksHandler).Methods("POST")
 
-	api.HandleFunc("/internal/task/", TaskSendHandler).Methods("GET")        // Агент получает задачу
-	api.HandleFunc("/internal/post_task/", TaskSolveHandler).Methods("POST") // Агент возвращает резул
+	api.HandleFunc("/internal/task/", TaskSendHandler).Methods("GET")
+	api.HandleFunc("/internal/post_task/", TaskSolveHandler).Methods("POST")
 
-	// 3. Все остальные GET запросы -> index.html
+	l
 	r.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Только GET запросы и не начинающиеся с /api или /static
+
 		if r.Method == "GET" &&
 			!strings.HasPrefix(r.URL.Path, "/api") &&
 			!strings.HasPrefix(r.URL.Path, "/static") {

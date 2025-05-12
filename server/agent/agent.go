@@ -112,7 +112,5 @@ func (a *Agent) worker(t *models.Task) {
 	ans_bytes, _ := json.Marshal(req)
 	r := bytes.NewReader(ans_bytes)
 
-	//	fmt.Println(url)
-
 	http.Post(url, "application/json", r)
 }
