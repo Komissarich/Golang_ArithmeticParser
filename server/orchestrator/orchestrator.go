@@ -6,7 +6,6 @@ import (
 	"calc/pkg/config"
 	logger "calc/pkg/logger"
 	"calc/server/models"
-<<<<<<< HEAD
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -22,16 +21,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
-=======
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
-	"strconv"
-	"time"
 
-	"github.com/gorilla/mux"
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	"go.uber.org/zap"
 )
 
@@ -39,15 +29,13 @@ var expressions models.ExpressionQueue
 
 var tasks models.TaskQueue
 
-<<<<<<< HEAD
 var db *sql.DB
 
 var global_userID int = 1
-=======
+
 // type Config struct {
 // 	Addr string
 // }
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 
 type ServerCorrectAnswer struct {
 	Expression string  `json:"expression"`
@@ -66,33 +54,32 @@ type Application struct {
 func loggingMiddleware(logger *zap.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-<<<<<<< HEAD
-=======
+
 			start := time.Now()
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
+
 			bodyBytes, _ := io.ReadAll(r.Body)
 			r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-			next.ServeHTTP(w, r)
-			if r.URL.Path != "/api/v1/internal/task/" {
-<<<<<<< HEAD
-=======
+
+			if r.URL.Path != "/api/v1/internal/task/" && r.URL.Path != "/api/v1/internal/post_task/" {
+
 				duration := time.Since(start)
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 				next.ServeHTTP(w, r)
 				logger.Info("HTTP request",
 					zap.String("method", r.Method),
 					zap.String("path", r.URL.Path),
-<<<<<<< HEAD
-=======
+
 					zap.Duration("duration", duration),
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
+
 					zap.String("body", string(bodyBytes)),
 				)
+				return
 			}
+
+			next.ServeHTTP(w, r)
 		})
 	}
 }
-<<<<<<< HEAD
+
 func (app *Application) generateToken(userID int) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -195,8 +182,6 @@ func initDB() {
 		log.Fatal(err)
 	}
 }
-=======
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 
 func New(cfg config.Config) *Application {
 	return &Application{
@@ -204,7 +189,6 @@ func New(cfg config.Config) *Application {
 	}
 }
 
-<<<<<<< HEAD
 func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	enableCORS(w, r)
@@ -262,7 +246,7 @@ func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.
 
 		expressions = append(expressions, expr)
 	}
-	fmt.Println("EXPRESSIONS", expressions)
+
 	// Проверяем ошибки итерации
 	if err = rows.Err(); err != nil {
 		http.Error(w, "Error during rows iteration: "+err.Error(), http.StatusInternalServerError)
@@ -275,7 +259,7 @@ func (a *Application) PrintAllExpressionsHandler(w http.ResponseWriter, r *http.
 		http.Error(w, "Error encoding response: "+err.Error(), http.StatusInternalServerError)
 	}
 }
-=======
+
 func PrintAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
@@ -288,21 +272,18 @@ func PrintAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, string(ans_bytes))
 }
 
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 func enableCORS(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusNoContent)
+		return
 	}
+
 }
 
-<<<<<<< HEAD
 func (a *Application) NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
-=======
-func NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 
 	defer r.Body.Close()
 	enableCORS(w, r)
@@ -317,7 +298,7 @@ func NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
 		type Answer struct {
 			Id string `json:"id"`
 		}
-<<<<<<< HEAD
+
 		//id, err := expressions.AddExpression(req.Expression)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
@@ -355,13 +336,13 @@ func NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		}
 		server_ans := Answer{Id: expr.Id}
-=======
+
 		id, err := expressions.AddExpression(req.Expression)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 		}
-		server_ans := Answer{Id: id}
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
+		server_ans = Answer{Id: id}
+
 		ans_bytes, _ := json.Marshal(server_ans)
 		fmt.Fprintln(w, string(ans_bytes))
 	}
@@ -370,7 +351,6 @@ func NewExpressionHandler(w http.ResponseWriter, r *http.Request) {
 func (a *Application) TaskCreator() {
 	time.Sleep(time.Second * 5)
 
-<<<<<<< HEAD
 	rows, err := db.Query(`
         SELECT id, status, result, value, postfix_string, 
                wait_for_solve, stack, saved_index
@@ -380,13 +360,11 @@ func (a *Application) TaskCreator() {
 	)
 	if err != nil {
 		log.Printf("Failed to get expressions: %v", err)
-
 		return
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-
 		var expr models.Expression
 		var postfixStr, stackStr string
 		err := rows.Scan(
@@ -406,69 +384,49 @@ func (a *Application) TaskCreator() {
 		json.Unmarshal([]byte(postfixStr), &expr.PostfixString)
 		json.Unmarshal([]byte(stackStr), &expr.Stack)
 		fmt.Println(expr.Id, expr.SavedIndex, expr.PostfixString, expr.Stack)
-		if expr.Status != "Solved" && expr.Status != "Error in expression" && !expr.WaitForSolve {
 
+		if expr.Status != "Solved" && expr.Status != "Error in expression" && !expr.WaitForSolve {
 			if expr.SavedIndex == len(expr.PostfixString) && len(expr.Stack) != 0 {
-				// expr.Status = "Solved"
 				expr.Result = expr.Stack[0]
 				db.Exec(`
-				UPDATE expressions 
-				SET status = 'Solved', 
-					result = ?,
-					updated_at = CURRENT_TIMESTAMP
-				WHERE id = ?`,
+                UPDATE expressions 
+                SET status = 'Solved', 
+                    result = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?`,
 					expr.Result,
 					expr.Id,
 				)
-=======
-	for _, expr := range expressions.Expressions {
-		if expr.Status != "Solved" && expr.Status != "Error in expression" && !expr.WaitforSolve {
-
-			if expr.SavedIndex == len(expr.PostfixString) {
-				expr.Status = "Solved"
-				expr.Result = expr.Stack[0]
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 			} else {
-
 				for i := expr.SavedIndex; i < len(expr.PostfixString); i++ {
-
-<<<<<<< HEAD
 					if !expr.WaitForSolve {
-=======
-					if !expr.WaitforSolve {
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 						val := expr.PostfixString[i]
 						conv_val, err := strconv.ParseFloat(val, 64)
 						if err == nil {
 							expr.Stack = append(expr.Stack, conv_val)
-<<<<<<< HEAD
 							stackStr, _ := json.Marshal(expr.Stack)
 							db.Exec(`
-								UPDATE expressions 
-								SET stack = ?,
-									updated_at = CURRENT_TIMESTAMP
-								WHERE id = ?`,
+                                UPDATE expressions 
+                                SET stack = ?,
+                                    updated_at = CURRENT_TIMESTAMP
+                                WHERE id = ?`,
 								string(stackStr),
 								expr.Id,
 							)
 						} else if calculator.IsOperator(val) {
 							fmt.Println("NICE NICE NICE")
-=======
-						} else if calculator.IsOperator(val) {
 
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 							fir_pop_item := expr.Stack[len(expr.Stack)-1]
 							expr.Stack = expr.Stack[:len(expr.Stack)-1]
 							sec_pop_item := expr.Stack[len(expr.Stack)-1]
 							expr.Stack = expr.Stack[:len(expr.Stack)-1]
 
 							if fir_pop_item == 0 && val == "/" {
-<<<<<<< HEAD
 								db.Exec(`
-									UPDATE expressions 
-									SET status = 'Error in expression',
-										updated_at = CURRENT_TIMESTAMP
-									WHERE id = ?`,
+                                    UPDATE expressions 
+                                    SET status = 'Error in expression',
+                                        updated_at = CURRENT_TIMESTAMP
+                                    WHERE id = ?`,
 									expr.Id,
 								)
 							}
@@ -478,65 +436,23 @@ func (a *Application) TaskCreator() {
 							expr.SavedIndex = i + 1
 							stackStr, _ := json.Marshal(expr.Stack)
 							db.Exec(`
-								UPDATE expressions 
-								SET stack = ?,
-									saved_index = ?,
-									wait_for_solve = true,
-									updated_at = CURRENT_TIMESTAMP
-								WHERE id = ?`,
+                                UPDATE expressions 
+                                SET stack = ?,
+                                    saved_index = ?,
+                                    wait_for_solve = true,
+                                    updated_at = CURRENT_TIMESTAMP
+                                WHERE id = ?`,
 								string(stackStr),
 								expr.SavedIndex,
 								expr.Id,
 							)
-
 						}
-
-=======
-								expr.Status = "Error in expression"
-							}
-
-							tasks.NewTask(expr.Id, fir_pop_item, sec_pop_item, val)
-							expr.WaitforSolve = true
-
-							expr.SavedIndex = i + 1
-
-						}
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 					}
 				}
 			}
 		}
 	}
 	a.TaskCreator()
-}
-
-func PrintTaskHandler(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	enableCORS(w, r)
-
-<<<<<<< HEAD
-	var creds struct {
-		Task_id string `json:"task_id"`
-	}
-	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
-		return
-	}
-
-	for _, task := range tasks.Tasks {
-		if task.Id == creds.Task_id {
-=======
-	vars := mux.Vars(r)
-	id := vars["task_id"]
-	for _, task := range tasks.Tasks {
-		if task.Id == id {
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
-			ans_bytes, _ := json.Marshal(task)
-			fmt.Fprintln(w, string(ans_bytes))
-			return
-		}
-	}
-	http.Error(w, "not found", http.StatusNotFound)
 }
 
 func PrintAllTasksHandler(w http.ResponseWriter, r *http.Request) {
@@ -548,8 +464,8 @@ func PrintAllTasksHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-<<<<<<< HEAD
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w, r)
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -582,56 +498,73 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if r.Method != "POST" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusBadRequest)
+		return
+	}
+	r.Body.Close() // Явно закрываем тело
+
 	var creds struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&creds); err != nil {
-
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+	if err := json.Unmarshal(bodyBytes, &creds); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid JSON: %v", err), http.StatusBadRequest)
 		return
 	}
 
-	// Проверка пользователя
 	var userID int
-	var password string
-	var email string
-
-	err := db.QueryRow(
-		"SELECT id, email, password FROM users WHERE email = ?",
+	var dbPassword string
+	err = db.QueryRow(
+		"SELECT id, password FROM users WHERE email = ?",
 		creds.Email,
-	).Scan(&userID, &email, &password)
-	global_userID = userID
-	if password != creds.Password {
+	).Scan(&userID, &dbPassword)
 
-		http.Error(w, "Wrong password", http.StatusBadRequest)
-		return
-	}
 	if err == sql.ErrNoRows {
-
-		http.Error(w, "Failed to find user", http.StatusInternalServerError)
+		http.Error(w, "User not found", http.StatusUnauthorized)
 		return
 	}
-	// Генерация токена
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+	if dbPassword != creds.Password {
+		http.Error(w, "Wrong password", http.StatusUnauthorized)
+		return
+	}
 
 	token, err := app.generateToken(userID)
 	if err != nil {
-
 		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
 		return
 	}
 
-	// Отправка ответа
 	w.Header().Set("Content-Type", "application/json")
-	var answer struct {
-		Token   string `json:"token"`
-		User_id int    `json:"user_id"`
+	response := map[string]interface{}{
+		"token":   token,
+		"user_id": userID,
 	}
-	answer.Token = token
-	answer.User_id = userID
-	json.NewEncoder(w).Encode(answer)
 
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Failed to send response: %v", err)
+	}
 }
 
 func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
@@ -641,12 +574,22 @@ func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
 		Expression_id string `json:"expression_id"`
 		User_id       string `json:"user_id"`
 	}
-	fmt.Println("creds", creds.Expression_id, creds.User_id)
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusBadRequest)
+		return
+	}
+	r.Body.Close() // Явно закрываем тело
+	if err := json.Unmarshal(bodyBytes, &creds); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid JSON: %v", err), http.StatusBadRequest)
+		return
+	}
+	fmt.Println("CREDS", creds.Expression_id, creds.User_id)
 	var expr models.Expression
-	err := db.QueryRow(
-		"SELECT id, status, result, value FROM expressions WHERE user_id = ? AND id = ?",
-		creds.User_id,
+	err = db.QueryRow(
+		"SELECT id, status, result, value FROM expressions WHERE id = ? AND user_id = ?",
 		creds.Expression_id,
+		creds.User_id,
 	).Scan(
 		&expr.Id,
 		&expr.Status,
@@ -659,22 +602,6 @@ func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
 
 	ans_bytes, _ := json.Marshal(expr)
 	fmt.Fprintln(w, string(ans_bytes))
-
-=======
-func PrintExpressionHandler(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	enableCORS(w, r)
-	vars := mux.Vars(r)
-	id := vars["expr_id"]
-	for _, expr := range expressions.Expressions {
-		if expr.Id == id {
-			ans_bytes, _ := json.Marshal(expr)
-			fmt.Fprintln(w, string(ans_bytes))
-			return
-		}
-	}
-	http.Error(w, "not found", http.StatusNotFound)
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 }
 
 func TaskSendHandler(w http.ResponseWriter, r *http.Request) {
@@ -694,20 +621,13 @@ func TaskSendHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
-<<<<<<< HEAD
-
-=======
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	type taskReq struct {
 		Task *models.Task `json:"task"`
 	}
 
 	req := taskReq{}
 	err := json.NewDecoder(r.Body).Decode(&req)
-<<<<<<< HEAD
 
-=======
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	if err != nil {
 		http.Error(w, "error in parsing json", http.StatusUnprocessableEntity)
 	}
@@ -719,7 +639,6 @@ func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
 			task.Value = req.Task.Value
 		}
 	}
-<<<<<<< HEAD
 
 	rows, err := db.Query(`
         SELECT id, status, result, value, postfix_string, 
@@ -768,28 +687,22 @@ func TaskSolveHandler(w http.ResponseWriter, r *http.Request) {
 				expr.WaitForSolve,
 				expr.Id,
 			)
-=======
+		}
+	}
 	for _, expr := range expressions.Expressions {
-		if expr.Id == req.Task.ExpressionId && expr.WaitforSolve {
-			expr.WaitforSolve = false
+		if expr.Id == req.Task.ExpressionId && expr.WaitForSolve {
+			expr.WaitForSolve = false
 			expr.Stack = append(expr.Stack, req.Task.Value)
 
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 		}
 	}
 
 }
 
-<<<<<<< HEAD
-func isApiRequest(path string) bool {
-	return strings.HasPrefix(path, "/api") ||
-		strings.HasPrefix(path, "/static")
-}
 func (a *Application) RunServer() error {
 	initDB()
 	defer db.Close()
 	r := mux.NewRouter()
-
 	logger := logger.SetupLogger()
 	staticDir := "./static" // Путь к папке со статикой
 	staticHandler := http.FileServer(http.Dir(staticDir))
@@ -813,8 +726,8 @@ func (a *Application) RunServer() error {
 	api.HandleFunc("/calculate/", a.NewExpressionHandler).Methods("POST")
 	api.HandleFunc("/expressions/", a.PrintAllExpressionsHandler).Methods("GET")
 	api.HandleFunc("/get_expression/", PrintExpressionHandler).Methods("POST")
-	api.HandleFunc("/tasks/", PrintAllTasksHandler).Methods("GET")
-	api.HandleFunc("/get_task/", PrintTaskHandler).Methods("POST")
+	api.HandleFunc("/tasks/", PrintAllTasksHandler).Methods("POST")
+
 	api.HandleFunc("/internal/task/", TaskSendHandler).Methods("GET")        // Агент получает задачу
 	api.HandleFunc("/internal/post_task/", TaskSolveHandler).Methods("POST") // Агент возвращает резул
 
@@ -831,30 +744,10 @@ func (a *Application) RunServer() error {
 			http.NotFound(w, r)
 		}
 	})
-
-=======
-func (a *Application) RunServer() error {
-	r := mux.NewRouter()
-
-	logger := logger.SetupLogger()
-
-	r.HandleFunc("/api/v1/calculate/", NewExpressionHandler).Methods("POST")
-	r.HandleFunc("/api/v1/expressions/", PrintAllExpressionsHandler).Methods("GET")
-	r.HandleFunc("/api/v1/expressions/{expr_id}", PrintExpressionHandler).Methods("GET")
-	r.HandleFunc("/api/v1/tasks/", PrintAllTasksHandler).Methods("GET")
-	r.HandleFunc("/api/v1/tasks/{task_id}", PrintTaskHandler).Methods("GET")
-	r.HandleFunc("/api/v1/internal/task/", TaskSendHandler).Methods("GET")
-	r.HandleFunc("/api/v1/internal/task/", TaskSolveHandler).Methods("POST")
-
-	fs := http.FileServer(http.Dir("static"))
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/index.html")
-	})
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868
 	logger.Info("HTTP request",
 		zap.String("server status", "started"),
 	)
 	r.Use(loggingMiddleware(logger))
 	return http.ListenAndServe(":"+a.cfg.Server_Port, r)
+
 }

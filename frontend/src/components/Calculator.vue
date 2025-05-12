@@ -52,7 +52,6 @@
           <option>All expressions</option>
           <option>One expression</option>
           <option>All tasks</option>
-          <option>One task</option>
         </select>
         <textarea 
         v-if="showIdInput" 
@@ -163,7 +162,7 @@
               },
             }
         )
-        console.log(response.data)
+       
             this.receivedData = response.data;
         } catch (error) {
             console.error('Request failed:', error);
@@ -194,7 +193,7 @@
     } 
     else if (this.selectedOption === 'All tasks') {
     
-      const response = await axios.get(
+      const response = await axios.post(
           '/api/v1/tasks/',
             {
               task_id: this.idInput
@@ -205,28 +204,10 @@
               },
             }
         )
+        
+        this.receivedData = response.data;
     } 
-    else if (this.selectedOption === 'One task') {
-        try {
-            const data = await axios.post(
-          '/api/v1/get_task/',
-            {
-              expression_id: this.idInput,
-              user_id: user_id
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json', // Важно явно указать!
-              },
-            }
-        )
     
-            this.receivedData = response.data;
-         } catch (error) {
-    console.error('Request failed:', error);
-   
-  }
-        }
     
      
    

@@ -1,6 +1,5 @@
 SERVER_PORT: 8080
 AGENT:
-<<<<<<< HEAD
     TimeAdditionMS: 3000
     TimeSubtractionMS : 400
     TimeMultiplicationMS : 500
@@ -9,10 +8,3 @@ AGENT:
 
 JWT_SECRET: "very_secret_key"
 JWT_EXPIRATION: "24h"
-=======
-    TIME_ADDITION_MS: 3000
-    TIME_SUBTRACTION_MS : 400
-    TIME_MULTIPLICATIONS_MS : 500
-    TIME_DIVISIONS_MS: 200
-    COMPUTING_POWER: 2
->>>>>>> c1a028191862e07aa216c4e0bb0d68ac4c4fa868

@@ -96,11 +96,8 @@ export default {
           
           console.log("Succesfully auth")
           localStorage.setItem("auth", "true")
-          console.log("new token ", data.token)  
-          console.log(data.data)
           localStorage.setItem("user_id", data.data.user_id)
-          console.log("new_id", data.user_id)
-          localStorage.setItem('token', data.data.token);
+          localStorage.setItem("token", data.data.token);
           
           this.authState.isLoggedIn = true
         
