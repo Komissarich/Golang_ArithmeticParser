@@ -18,16 +18,16 @@ Back-end
 Вычислитель(агент), который может получить от оркестратора задачу, выполнить его и вернуть серверу результат.
 
 
-graph TD
-    Client[Клиент] -->|Отправляет выражение| Orchestrator[Оркестратор]
-    Orchestrator -->|Разбивает на задачи| Orchestrator
-    Orchestrator -->|Распределяет задачи| Agent1[Агент 1]
-    Orchestrator -->|Распределяет задачи| Agent2[Агент 2]
-    Orchestrator -->|Распределяет задачи| AgentN[Агент N]
-    Agent1 -->|Возвращает результаты| Orchestrator
-    Agent2 -->|Возвращает результаты| Orchestrator
-    AgentN -->|Возвращает результаты| Orchestrator
-    Orchestrator -->|Возвращает итоговый результат| Client
+graph TD;
+    Client[Клиент] -->|Отправляет выражение| Orchestrator[Оркестратор];
+    Orchestrator -->|Разбивает на задачи| Orchestrator;
+    Orchestrator -->|Распределяет задачи| Agent1[Агент 1];
+    Orchestrator -->|Распределяет задачи| Agent2[Агент 2];
+    Orchestrator -->|Распределяет задачи| AgentN[Агент N];
+    Agent1 -->|Возвращает результаты| Orchestrator;
+    Agent2 -->|Возвращает результаты| Orchestrator;
+    AgentN -->|Возвращает результаты| Orchestrator;
+    Orchestrator -->|Возвращает итоговый результат| Client;
 
 ## Установка
 
